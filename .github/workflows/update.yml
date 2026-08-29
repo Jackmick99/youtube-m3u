@@ -21,9 +21,19 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install yt-dlp
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Install yt-dlp with EJS
         run: |
-          python -m pip install -U yt-dlp
+          python -m pip install -U "yt-dlp[default]"
+
+      - name: Show versions
+        run: |
+          deno --version
+          yt-dlp --version
 
       - name: Update playlist
         run: |

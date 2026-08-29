@@ -3,32 +3,51 @@ from pathlib import Path
 
 URL = "https://www.youtube.com/watch?v=wHJHpOP7vjM"
 
-result = subprocess.run(
-    [
-        "yt-dlp",
-        "--no-warnings",
-        "--extractor-args",
-        "youtube:player_client=web_safari",
-        "--get-url",
-        "-f",
-        "best[protocol*=m3u8]/best",
-        URL,
-    ],
-    capture_output=True,
-    text=True,
-)
+clients = [
+    "web_embedded",
+    "android_vr",
+    "web_safari",
+]
 
-if result.returncode != 0 or not result.stdout.strip():
-    print(result.stderr)
-    raise SystemExit("Impossibile ottenere lo stream YouTube")
+for client in clients:
+    print(f"\n=== Provo client: {client} ===")
 
-stream_url = result.stdout.strip().splitlines()[-1]
+    result = subprocess.run(
+        [
+            "yt-dlp",
+            "--no-warnings",
+            "--extractor-args",
+            f"youtube:player_client={client}",
+            "--get-url",
+            "-f",
+            "best[protocol*=m3u8]/best",
+            URL,
+        ],
+        capture_output=True,
+        text=True,
+    )
 
-playlist = f"""#EXTM3U
+    if result.returncode == 0 and result.stdout.strip():
+        stream_url = result.stdout.strip().splitlines()[-1]
+
+        playlist = f"""#EXTM3U
 #EXTINF:-1,Diretta YouTube
 {stream_url}
 """
 
-Path("youtube.m3u8").write_text(playlist, encoding="utf-8")
+        Path("youtube.m3u8").write_text(
+            playlist,
+            encoding="utf-8"
+        )
 
-print("M3U8 aggiornata.")
+        print(f"OK! Client funzionante: {client}")
+        print("M3U8 aggiornata.")
+        break
+
+    print("Fallito:")
+    print(result.stderr[:2000])
+
+else:
+    raise SystemExit(
+        "Nessun client YouTube è riuscito ad ottenere lo stream."
+    )

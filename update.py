@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 
 URL = "https://www.youtube.com/watch?v=wHJHpOP7vjM"
+OUTPUT = Path("youtube.m3u8")
 
 cookies = os.environ.get("YOUTUBE_COOKIES")
 
@@ -24,11 +25,12 @@ try:
         ],
         capture_output=True,
         text=True,
+        timeout=120,
     )
 
     if result.returncode != 0:
         print(result.stderr)
-        raise SystemExit("Impossibile ottenere lo stream")
+        raise SystemExit("YouTube non ha restituito uno stream")
 
     urls = [
         line.strip()
@@ -37,25 +39,20 @@ try:
     ]
 
     if not urls:
-        print(result.stdout)
         raise SystemExit("Nessun URL dello stream trovato")
 
     stream_url = urls[-1]
 
-    playlist = f"""#EXTM3U
-#EXTINF:-1,Diretta YouTube
-{stream_url}
-"""
-
-    Path("youtube.m3u8").write_text(
-        playlist,
-        encoding="utf-8"
+    playlist = (
+        "#EXTM3U\n"
+        "#EXTINF:-1 tvg-name=\"Diretta YouTube\",Diretta YouTube\n"
+        f"{stream_url}\n"
     )
 
-    print("===================================")
-    print("STREAM TROVATO!")
-    print("Playlist youtube.m3u8 aggiornata.")
-    print("===================================")
+    # Scrive il file SOLO dopo aver ottenuto un URL valido.
+    OUTPUT.write_text(playlist, encoding="utf-8")
+
+    print("Stream trovato e playlist aggiornata.")
 
 finally:
     cookie_file.unlink(missing_ok=True)

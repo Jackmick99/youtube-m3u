@@ -26,14 +26,9 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Install yt-dlp with EJS
+      - name: Install yt-dlp
         run: |
           python -m pip install -U "yt-dlp[default]"
-
-      - name: Show versions
-        run: |
-          deno --version
-          yt-dlp --version
 
       - name: Update playlist
         env:
@@ -44,7 +39,7 @@ jobs:
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+users.noreply.github.com"
           git add youtube.m3u8
           git diff --cached --quiet || git commit -m "Update YouTube stream"
           git push

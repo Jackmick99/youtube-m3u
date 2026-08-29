@@ -45,7 +45,7 @@ try:
 
     playlist = (
         "#EXTM3U\n"
-        "#EXTINF:-1 tvg-name=\"Diretta YouTube\",Diretta YouTube\n"
+        "#EXTINF:-1, Diretta YouTube\n"
         f"{stream_url}\n"
     )
 

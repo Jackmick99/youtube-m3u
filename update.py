@@ -16,22 +16,46 @@ try:
     result = subprocess.run(
         [
             "yt-dlp",
-            "-v",
             "--no-warnings",
             "--cookies", str(cookie_file),
-            "--simulate",
-            "--skip-download",
+            "--get-url",
+            "-f", "best[protocol*=m3u8]/best",
             URL,
         ],
         capture_output=True,
         text=True,
     )
 
-    print(result.stdout)
-    print(result.stderr)
-
     if result.returncode != 0:
-        raise SystemExit("Test YouTube fallito")
+        print(result.stderr)
+        raise SystemExit("Impossibile ottenere lo stream")
+
+    urls = [
+        line.strip()
+        for line in result.stdout.splitlines()
+        if line.strip().startswith("http")
+    ]
+
+    if not urls:
+        print(result.stdout)
+        raise SystemExit("Nessun URL dello stream trovato")
+
+    stream_url = urls[-1]
+
+    playlist = f"""#EXTM3U
+#EXTINF:-1,Diretta YouTube
+{stream_url}
+"""
+
+    Path("youtube.m3u8").write_text(
+        playlist,
+        encoding="utf-8"
+    )
+
+    print("===================================")
+    print("STREAM TROVATO!")
+    print("Playlist youtube.m3u8 aggiornata.")
+    print("===================================")
 
 finally:
     cookie_file.unlink(missing_ok=True)

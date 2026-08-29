@@ -7,6 +7,8 @@ result = subprocess.run(
     [
         "yt-dlp",
         "--no-warnings",
+        "--extractor-args",
+        "youtube:player_client=web_safari",
         "--get-url",
         "-f",
         "best[protocol*=m3u8]/best",

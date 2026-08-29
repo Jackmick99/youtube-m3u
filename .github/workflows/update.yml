@@ -36,6 +36,8 @@ jobs:
           yt-dlp --version
 
       - name: Update playlist
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
         run: |
           python update.py
 

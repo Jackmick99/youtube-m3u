@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 
 URL = "https://www.youtube.com/watch?v=wHJHpOP7vjM"
-OUTPUT = Path("youtube.m3u8")
+OUTPUT = Path("playlist.m3u")
 
 cookies = os.environ.get("YOUTUBE_COOKIES")
 

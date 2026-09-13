@@ -9,7 +9,7 @@ CHANNELS = [
         "output": "trm.m3u8",
     },
     {
-        "name": "SKY TG24",
+        "name": "Sky TG24",
         "url": "https://www.youtube.com/watch?v=DBkiOifHkVE",
         "output": "skytg24.m3u8",
     },
@@ -25,7 +25,7 @@ cookie_file.write_text(cookies, encoding="utf-8")
 
 try:
     for channel in CHANNELS:
-        print(f"Aggiornamento: {channel['name']}")
+        print(f"\n--- Aggiornamento {channel['name']} ---")
 
         result = subprocess.run(
             [
@@ -43,7 +43,7 @@ try:
 
         if result.returncode != 0:
             print(result.stderr)
-            print(f"ERRORE: {channel['name']} non aggiornato.")
+            print(f"ERRORE: {channel['name']} non aggiornato")
             continue
 
         urls = [
@@ -69,7 +69,10 @@ try:
             encoding="utf-8"
         )
 
-        print(f"{channel['name']} aggiornato → {channel['output']}")
+        print(
+            f"{channel['name']} aggiornato correttamente -> "
+            f"{channel['output']}"
+        )
 
 finally:
     cookie_file.unlink(missing_ok=True)

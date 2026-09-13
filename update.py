@@ -70,7 +70,7 @@ try:
         )
 
         print(
-            f"{channel['name']} aggiornato correttamente -> "
+            f"{channel['name']} aggiornato -> "
             f"{channel['output']}"
         )
 

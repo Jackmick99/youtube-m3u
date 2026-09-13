@@ -25,7 +25,7 @@ cookie_file.write_text(cookies, encoding="utf-8")
 
 try:
     for channel in CHANNELS:
-        print(f"\n--- Aggiornamento {channel['name']} ---")
+        print(f"--- Aggiornamento {channel['name']} ---")
 
         result = subprocess.run(
             [
@@ -69,10 +69,7 @@ try:
             encoding="utf-8"
         )
 
-        print(
-            f"{channel['name']} aggiornato -> "
-            f"{channel['output']}"
-        )
+        print(f"{channel['name']} aggiornato -> {channel['output']}")
 
 finally:
     cookie_file.unlink(missing_ok=True)

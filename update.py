@@ -2,8 +2,18 @@ import os
 import subprocess
 from pathlib import Path
 
-URL = "https://www.youtube.com/watch?v=_nd_bpGoMVE"
-OUTPUT = Path("trm.m3u8")
+CHANNELS = [
+    {
+        "name": "TRM H24",
+        "url": "https://www.youtube.com/watch?v=_nd_bpGoMVE",
+        "output": "trm.m3u8",
+    },
+    {
+        "name": "SKY TG24",
+        "url": "https://www.youtube.com/watch?v=DBkiOifHkVE",
+        "output": "skytg24.m3u8",
+    },
+]
 
 cookies = os.environ.get("YOUTUBE_COOKIES")
 
@@ -14,45 +24,52 @@ cookie_file = Path("cookies.txt")
 cookie_file.write_text(cookies, encoding="utf-8")
 
 try:
-    result = subprocess.run(
-        [
-            "yt-dlp",
-            "--no-warnings",
-            "--cookies", str(cookie_file),
-            "--get-url",
-            "-f", "best[protocol*=m3u8]/best",
-            URL,
-        ],
-        capture_output=True,
-        text=True,
-        timeout=120,
-    )
+    for channel in CHANNELS:
+        print(f"Aggiornamento: {channel['name']}")
 
-    if result.returncode != 0:
-        print(result.stderr)
-        raise SystemExit("YouTube non ha restituito uno stream")
+        result = subprocess.run(
+            [
+                "yt-dlp",
+                "--no-warnings",
+                "--cookies", str(cookie_file),
+                "--get-url",
+                "-f", "best[protocol*=m3u8]/best",
+                channel["url"],
+            ],
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
 
-    urls = [
-        line.strip()
-        for line in result.stdout.splitlines()
-        if line.strip().startswith("http")
-    ]
+        if result.returncode != 0:
+            print(result.stderr)
+            print(f"ERRORE: {channel['name']} non aggiornato.")
+            continue
 
-    if not urls:
-        raise SystemExit("Nessun URL dello stream trovato")
+        urls = [
+            line.strip()
+            for line in result.stdout.splitlines()
+            if line.strip().startswith("http")
+        ]
 
-    stream_url = urls[-1]
+        if not urls:
+            print(f"ERRORE: nessun URL trovato per {channel['name']}")
+            continue
 
-    playlist = (
-        "#EXTM3U\n"
-        "#EXTINF:-1, Diretta YouTube\n"
-        f"{stream_url}\n"
-    )
+        stream_url = urls[-1]
 
-    # Scrive il file SOLO dopo aver ottenuto un URL valido.
-    OUTPUT.write_text(playlist, encoding="utf-8")
+        playlist = (
+            "#EXTM3U\n"
+            f"#EXTINF:-1,{channel['name']}\n"
+            f"{stream_url}\n"
+        )
 
-    print("Stream trovato e playlist aggiornata.")
+        Path(channel["output"]).write_text(
+            playlist,
+            encoding="utf-8"
+        )
+
+        print(f"{channel['name']} aggiornato → {channel['output']}")
 
 finally:
     cookie_file.unlink(missing_ok=True)

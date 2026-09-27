@@ -1,0 +1,64 @@
+name: Test YouTube URL
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL della diretta YouTube da testare"
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Install yt-dlp
+        run: |
+          python -m pip install -U "yt-dlp[default]"
+
+      - name: Test YouTube stream
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+          VIDEO_URL: ${{ inputs.url }}
+        run: |
+          printf '%s' "$YOUTUBE_COOKIES" > cookies-test.txt
+          trap 'rm -f cookies-test.txt' EXIT
+
+          echo "================================"
+          echo "1. CONTROLLO FORMATI DISPONIBILI"
+          echo "================================"
+
+          yt-dlp \
+            --cookies cookies-test.txt \
+            -F "$VIDEO_URL"
+
+          echo ""
+          echo "================================"
+          echo "2. TEST HLS COME UPDATE.PY"
+          echo "================================"
+
+          STREAM_URL=$(yt-dlp \
+            --no-warnings \
+            --cookies cookies-test.txt \
+            --get-url \
+            -f "best[protocol*=m3u8]/best" \
+            "$VIDEO_URL")
+
+          if [ -z "$STREAM_URL" ]; then
+            echo "ERRORE: nessun flusso HLS compatibile trovato"
+            exit 1
+          fi
+
+          echo "OK: questo canale è compatibile con il sistema del repository"
+          echo "URL HLS estratto correttamente"

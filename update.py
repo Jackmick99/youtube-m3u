@@ -10,7 +10,7 @@ CHANNELS = [
     },
     {
         "name": "Sky TG24",
-        "url": "https://youtu.be/DBkiOifHkVE",
+        "url": "https://www.youtube.com/watch?v=DBkiOifHkVE",
         "output": "skytg24.m3u8",
     },
 ]

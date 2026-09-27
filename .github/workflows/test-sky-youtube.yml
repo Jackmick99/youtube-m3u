@@ -1,4 +1,4 @@
-name: Test Sky YouTube Geo
+name: Test Sky YouTube via Tor Italy
 
 on:
   workflow_dispatch:
@@ -13,14 +13,23 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install yt-dlp
+      - name: Install yt-dlp and Tor
         run: |
           python -m pip install -U "yt-dlp[default]"
+          sudo apt-get update
+          sudo apt-get install -y tor
 
-      - name: Test Sky TG24 con geobypass Italia
+      - name: Configure Tor Italy
+        run: |
+          echo "ExitNodes {it}" | sudo tee -a /etc/tor/torrc
+          echo "StrictNodes 1" | sudo tee -a /etc/tor/torrc
+          sudo systemctl restart tor
+          sleep 15
+
+      - name: Test Sky TG24 through Tor
         run: |
           yt-dlp \
             -v \
-            --xff IT \
+            --proxy "socks5://127.0.0.1:9050" \
             --extractor-args "youtube:player_client=android" \
             -F "https://www.youtube.com/watch?v=DBkiOifHkVE"

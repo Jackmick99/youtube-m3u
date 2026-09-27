@@ -33,6 +33,17 @@ jobs:
           cd bgutil-ytdlp-pot-provider/server
           deno install --allow-scripts=npm:canvas --frozen
 
+      - name: Test Sky TG24
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          echo "$YOUTUBE_COOKIES" > cookies-test.txt
+          echo "=== VERSIONE YT-DLP ==="
+          yt-dlp --version
+          echo "=== TEST SKY TG24 CON VISIONOS ==="
+          yt-dlp -v --cookies cookies-test.txt --extractor-args "youtube:player_client=visionos" -F "https://www.youtube.com/watch?v=DBkiOifHkVE"
+          rm -f cookies-test.txt
+
       - name: Update playlist
         env:
           YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}

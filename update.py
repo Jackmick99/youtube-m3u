@@ -35,7 +35,12 @@ try:
         # TRM usa i cookies.
         # Sky TG24 viene provato senza cookies.
         if channel["name"] != "Sky TG24":
-            command.extend(["--cookies", str(cookie_file)])
+        command.extend(["--cookies", str(cookie_file)])
+        else:
+        command.extend([
+            "--extractor-args",
+            "youtube:player_client=web_safari",
+        ])
 
         command.extend([
             "--get-url",

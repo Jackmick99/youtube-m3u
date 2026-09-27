@@ -7,11 +7,13 @@ CHANNELS = [
         "name": "TRM H24",
         "url": "https://www.youtube.com/watch?v=_nd_bpGoMVE",
         "output": "trm.m3u8",
+        "pot": False,
     },
     {
         "name": "Sky TG24",
         "url": "https://www.youtube.com/watch?v=DBkiOifHkVE",
         "output": "skytg24.m3u8",
+        "pot": True,
     },
 ]
 
@@ -27,15 +29,29 @@ try:
     for channel in CHANNELS:
         print(f"--- Aggiornamento {channel['name']} ---")
 
+        command = [
+            "yt-dlp",
+            "--no-warnings",
+            "--cookies", str(cookie_file),
+        ]
+
+        # Solo Sky TG24 usa mweb + PO Token provider.
+        if channel["pot"]:
+            command.extend([
+                "--extractor-args",
+                "youtube:player_client=mweb",
+                "--extractor-args",
+                "youtubepot-bgutilscript:server_home=bgutil-ytdlp-pot-provider/server",
+            ])
+
+        command.extend([
+            "--get-url",
+            "-f", "best[protocol*=m3u8]/best",
+            channel["url"],
+        ])
+
         result = subprocess.run(
-            [
-                "yt-dlp",
-                "--no-warnings",
-                "--cookies", str(cookie_file),
-                "--get-url",
-                "-f", "best[protocol*=m3u8]/best",
-                channel["url"],
-            ],
+            command,
             capture_output=True,
             text=True,
             timeout=120,

@@ -41,7 +41,7 @@ jobs:
           echo "=== VERSIONE YT-DLP ==="
           yt-dlp --version
           echo "=== TEST SKY TG24 CON VISIONOS ==="
-          yt-dlp -v --cookies cookies-test.txt --extractor-args "youtube:player_client=visionos" -F "https://www.youtube.com/watch?v=DBkiOifHkVE"
+          yt-dlp -v --extractor-args "youtube:player_client=visionos" -F "https://www.youtube.com/watch?v=DBkiOifHkVE"
           rm -f cookies-test.txt
 
       - name: Update playlist

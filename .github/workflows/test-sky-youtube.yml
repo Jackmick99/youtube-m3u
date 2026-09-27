@@ -1,37 +1,7 @@
-name: Test Sky YouTube Clients
-
-on:
-  workflow_dispatch:
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-
-      - name: Install yt-dlp
+      - name: Test Sky TG24 con geobypass Italia
         run: |
-          python -m pip install -U "yt-dlp[default]"
-
-      - name: Test YouTube clients
-        run: |
-          for client in web web_safari visionos android android_vr ios tv tv_simply; do
-            echo "=============================="
-            echo "TEST CLIENT: $client"
-            echo "=============================="
-
-            yt-dlp \
-              --no-warnings \
-              --extractor-args "youtube:player_client=$client" \
-              -F "https://www.youtube.com/watch?v=DBkiOifHkVE" \
-              || true
-          done
+          yt-dlp \
+            -v \
+            --xff IT \
+            --extractor-args "youtube:player_client=android" \
+            -F "https://www.youtube.com/watch?v=DBkiOifHkVE"

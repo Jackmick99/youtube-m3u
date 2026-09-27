@@ -26,6 +26,11 @@ jobs:
           sudo systemctl restart tor
           sleep 15
 
+      - name: Check Tor exit
+        run: |
+          echo "=== IP USCITA TOR ==="
+          curl --proxy socks5h://127.0.0.1:9050 https://ipinfo.io/json
+
       - name: Test Sky TG24 through Tor
         run: |
           yt-dlp \

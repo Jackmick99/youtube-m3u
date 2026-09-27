@@ -41,19 +41,6 @@ try:
             timeout=120,
         )
 
-        command.extend([
-            "--get-url",
-            "-f", "best[protocol*=m3u8]/best",
-            channel["url"],
-        ])
-
-        result = subprocess.run(
-            command,
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-
         if result.returncode != 0:
             print(result.stderr)
             print(f"ERRORE: {channel['name']} non aggiornato")

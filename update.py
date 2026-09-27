@@ -8,11 +8,6 @@ CHANNELS = [
         "url": "https://www.youtube.com/watch?v=_nd_bpGoMVE",
         "output": "trm.m3u8",
     },
-    {
-        "name": "Sky TG24",
-        "url": "https://www.youtube.com/watch?v=DBkiOifHkVE",
-        "output": "skytg24.m3u8",
-    },
 ]
 
 cookies = os.environ.get("YOUTUBE_COOKIES")

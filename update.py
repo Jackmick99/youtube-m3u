@@ -27,28 +27,28 @@ try:
     for channel in CHANNELS:
         print(f"--- Aggiornamento {channel['name']} ---")
 
-command = [
-    "yt-dlp",
-    "--no-warnings",
-]
+        command = [
+            "yt-dlp",
+            "--no-warnings",
+        ]
 
-# TRM usa i cookies come prima.
-# Sky TG24 viene provato senza cookies.
-if channel["name"] != "Sky TG24":
-    command.extend(["--cookies", str(cookie_file)])
+        # TRM usa i cookies.
+        # Sky TG24 viene provato senza cookies.
+        if channel["name"] != "Sky TG24":
+            command.extend(["--cookies", str(cookie_file)])
 
-command.extend([
-    "--get-url",
-    "-f", "best[protocol*=m3u8]/best",
-    channel["url"],
-])
+        command.extend([
+            "--get-url",
+            "-f", "best[protocol*=m3u8]/best",
+            channel["url"],
+        ])
 
-result = subprocess.run(
-    command,
-    capture_output=True,
-    text=True,
-    timeout=120,
-)
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
 
         if result.returncode != 0:
             print(result.stderr)
@@ -75,7 +75,7 @@ result = subprocess.run(
 
         Path(channel["output"]).write_text(
             playlist,
-            encoding="utf-8"
+            encoding="utf-8",
         )
 
         print(f"{channel['name']} aggiornato -> {channel['output']}")

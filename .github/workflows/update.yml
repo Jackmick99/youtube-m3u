@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout
@@ -29,6 +29,10 @@ jobs:
       - name: Install yt-dlp
         run: |
           python -m pip install -U "yt-dlp[default]"
+
+      - name: Test Sky TG24 on macOS
+        run: |
+          yt-dlp -v --extractor-args "youtube:player_client=visionos" -F "https://www.youtube.com/watch?v=DBkiOifHkVE"
 
       - name: Update playlist
         env:

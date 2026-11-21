@@ -5,7 +5,7 @@ from pathlib import Path
 CHANNELS = [
     {
         "name": "TRM H24",
-        "url": "https://www.youtube.com/watch?v=88vVV1k84Qo&pp=ygUHdHJtIGgyNA%3D%3D",
+        "url": "https://www.youtube.com/watch?v=mHH1UZgNbP4",
         "output": "trm.m3u8",
     },
 ]
